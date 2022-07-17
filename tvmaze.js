@@ -62,7 +62,13 @@ function populateShows(shows) {
        </div>
       `);
 
+    const $episodesBtn = $('<button type="button">Episodes</button>');
+    const $cardBody = $('.card-body')
     $showsList.append($item);
+    $cardBody.append($episodesBtn);
+    
+    
+
   }
 }
 
@@ -92,8 +98,23 @@ $("#search-form").on("submit", async function handleSearch (evt) {
 
 async function getEpisodes(id) {
   // TODO: get episodes from tvmaze
-  //       you can get this by making GET request to
-  //       http://api.tvmaze.com/shows/SHOW-ID-HERE/episodes
+  const res = await axios.get(`http://api.tvmaze.com/shows/${id}/episodes`)
+  // console.log(res.data['0']);
+  const episodeList = []
+  for(let i = 0; i < res.data.length; i++){
+    episodeList.push({
+      id: res.data[`${i}`].id,
+      name: res.data[`${i}`].name,
+      season: res.data[`${i}`].season,
+      number: res.data[`${i}`].number
+    })
+  }
+  return episodeList;
+}
 
-  // TODO: return array-of-episode-info, as described in docstring above
+function populateEpisodes(episodeList){
+  const $episodeList = $('#episode-list')
+  $episodeList.empty();
+  let $li = $(`<li>${episodeList.name} (${episodeList.season}, ${episodeList.number})</li>`);
+  $episodeList.append($li);
 }
