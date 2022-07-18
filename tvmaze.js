@@ -57,21 +57,16 @@ function populateShows(shows) {
              <h5 class="card-title">${show.name}</h5>
              <p class="card-text">${show.summary}</p>
              <img class="card-img-top" src="${showImg}">
+             <div id="button-div" class="d-grid gap-2">
+              <button type="button" class="episodes-button btn btn-primary btn-lg">Episodes</button>
+            </div>
            </div>
          </div>
        </div>
       `);
-
-    const $episodesBtn = $('<button type="button">Episodes</button>');
-    const $cardBody = $('.card-body')
     $showsList.append($item);
-    $cardBody.append($episodesBtn);
-    
-    
-
   }
 }
-
 
 /** Handle search form submission:
  *    - hide episodes area
@@ -113,8 +108,17 @@ async function getEpisodes(id) {
 }
 
 function populateEpisodes(episodeList){
-  const $episodeList = $('#episode-list')
+  const $episodeList = $('#episodes-list') 
   $episodeList.empty();
-  let $li = $(`<li>${episodeList.name} (${episodeList.season}, ${episodeList.number})</li>`);
-  $episodeList.append($li);
+  for(let episode of episodeList){
+    let $li = $(`<li>${episode.name} (Season: ${episode.season}, Episode: ${episode.number})</li>`);
+    $episodeList.append($li);
+  }
 }
+
+$('#shows-list').on('click', '.episodes-button', async function handleClick(e){
+  const $showId = $(e.target).closest('.Show').data('show-id');
+  const episodes = await getEpisodes($showId)
+  populateEpisodes(episodes)
+  $('#episodes-area').show()
+})
